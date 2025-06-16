@@ -6,27 +6,35 @@ import titleImg from './img/title.png';
 import namePromptImg from './img/name.png';
 import prettyImg from './img/pretty_name.png';
 import worryImg from './img/worry.png';
+import majorImg from './img/major.png';
 import './App.css';
 
 function App() {
   const [step, setStep] = useState('start');
+  const [major, setmajor] = useState('');
   const [name, setName] = useState('');
   const [concern, setConcern] = useState('');
-  const [currentMessageImg, setCurrentMessageImg] = useState(''); // 'name', 'pretty', 'worry'
+  const [currentMessageImg, setCurrentMessageImg] = useState('');
   const [showConcernInput, setShowConcernInput] = useState(false);
 
   const handleStartClick = () => {
-    setStep('nameInput');
-    setCurrentMessageImg('name');
+    setStep('major');
+    setCurrentMessageImg('major');
+  };
+
+  const handlemajorSubmit = () => {
+    if (major) {
+      setStep('nameInput');
+      setCurrentMessageImg('name');
+    }
   };
 
   const handleNameSubmit = (enteredName) => {
     setName(enteredName);
-    setStep('concernInput'); // 미리 concernInput 단계로 넘어감
-    setShowConcernInput(false); // 입력창은 아직 안 보이게
-    setCurrentMessageImg('pretty'); // 예쁘다 이미지 먼저 보여줌
+    setStep('concernInput');
+    setShowConcernInput(false);
+    setCurrentMessageImg('pretty');
 
-    // 2초 후 worry 이미지 + 고민 입력창 등장
     setTimeout(() => {
       setCurrentMessageImg('worry');
       setShowConcernInput(true);
@@ -35,7 +43,7 @@ function App() {
 
   const handleConcernSubmit = (enteredConcern) => {
     setConcern(enteredConcern);
-    setCurrentMessageImg(''); // 메시지 제거하거나 다른 걸로 바꿔도 됨
+    setCurrentMessageImg('');
     setStep('result');
   };
 
@@ -74,6 +82,9 @@ function App() {
             <CrystalBallScene />
             {currentMessageImg && (
               <div className="magic-orb-overlay-message">
+                {currentMessageImg === 'major' && (
+                  <img src={majorImg} alt="소속을 알려주세요" style={{ width: '220px' }} />
+                )}
                 {currentMessageImg === 'name' && (
                   <img src={namePromptImg} alt="이름을 알려주세요" style={{ width: '220px' }} />
                 )}
@@ -87,22 +98,71 @@ function App() {
             )}
           </div>
 
-          {/* 별 + 입력칸 영역 */}
+          {/* 입력 영역 */}
           <div
             style={{
               marginLeft: '50px',
               flexGrow: 1,
               paddingLeft: '500px',
               paddingBottom: '300px',
+              color: 'white',
             }}
           >
+            {step === 'major' && (
+              <div style={{ marginTop: '500px' , marginLeft: '50px'}}>
+                <form>
+                  <label>
+                    <input
+                      type="radio"
+                      name="major"
+                      value="소프트웨어과"
+                      onChange={(e) => setmajor(e.target.value)}
+                    /> 소프트웨어과
+                  </label>
+                  <br />
+                  <label>
+                    <input
+                      type="radio"
+                      name="major"
+                      value="디자인과"
+                      onChange={(e) => setmajor(e.target.value)}
+                    /> 디자인과
+                  </label>
+                  <br />
+                  <label>
+                    <input
+                      type="radio"
+                      name="major"
+                      value="외부인"
+                      onChange={(e) => setmajor(e.target.value)}
+                    /> 외부인
+                  </label>
+                </form>
+                <button
+                  onClick={handlemajorSubmit}
+                  disabled={!major}
+                  style={{
+                    marginTop: '20px',
+                    padding: '8px 16px',
+                    borderRadius: '8px',
+                    border: 'none',
+                    backgroundColor: 'white',
+                    cursor: 'pointer',
+                  }}
+                >
+                  선택
+                </button>
+              </div>
+            )}
+
+
             {step === 'nameInput' && <NameInput onSubmit={handleNameSubmit} />}
             {step === 'concernInput' && showConcernInput && (
               <ConcernInput onSubmit={handleConcernSubmit} />
             )}
             {step === 'result' && (
-              <div style={{ color: 'white' }}>
-                <p>{name}님의 고민이 수정구슬에 전달되었습니다.</p>
+              <div>
+                <p>{major}의 {name}님의 고민이 수정구슬에 전달되었습니다.</p>
               </div>
             )}
           </div>
