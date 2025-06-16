@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import starImg from '../img/star.png'; // ✅ star.png 이미지 불러오기
+import starImg from '../img/star.png';
 
 function ConcernInput({ onSubmit }) {
   const [input, setInput] = useState('');

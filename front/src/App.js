@@ -4,28 +4,38 @@ import NameInput from './components/NameInput';
 import ConcernInput from './components/ConcernInput';
 import titleImg from './img/title.png';
 import namePromptImg from './img/name.png';
+import prettyImg from './img/pretty_name.png';
+import worryImg from './img/worry.png';
 import './App.css';
 
 function App() {
   const [step, setStep] = useState('start');
   const [name, setName] = useState('');
   const [concern, setConcern] = useState('');
-  const [magicOrbMessage, setMagicOrbMessage] = useState('');
+  const [currentMessageImg, setCurrentMessageImg] = useState(''); // 'name', 'pretty', 'worry'
+  const [showConcernInput, setShowConcernInput] = useState(false);
 
   const handleStartClick = () => {
     setStep('nameInput');
-    setMagicOrbMessage('이름을 알려주세요');
+    setCurrentMessageImg('name');
   };
 
   const handleNameSubmit = (enteredName) => {
     setName(enteredName);
-    setMagicOrbMessage(`${enteredName} 이름이 정말 예쁘다!`);
-    setStep('concernInput');
+    setStep('concernInput'); // 미리 concernInput 단계로 넘어감
+    setShowConcernInput(false); // 입력창은 아직 안 보이게
+    setCurrentMessageImg('pretty'); // 예쁘다 이미지 먼저 보여줌
+
+    // 2초 후 worry 이미지 + 고민 입력창 등장
+    setTimeout(() => {
+      setCurrentMessageImg('worry');
+      setShowConcernInput(true);
+    }, 2000);
   };
 
   const handleConcernSubmit = (enteredConcern) => {
     setConcern(enteredConcern);
-    setMagicOrbMessage('고민을 잘 전달받았어요.');
+    setCurrentMessageImg(''); // 메시지 제거하거나 다른 걸로 바꿔도 됨
     setStep('result');
   };
 
@@ -51,33 +61,33 @@ function App() {
         </div>
       ) : (
         <div style={{ display: 'flex', height: '100%' }}>
-          {/* 수정구슬 위치 (조금 아래+오른쪽) */}
+          {/* 수정구슬 */}
           <div
             style={{
-              width: '400px',
-              height: '400px',
+              width: '300px',
+              height: '300px',
               position: 'relative',
               marginTop: '40px',
               marginLeft: '40px',
             }}
           >
             <CrystalBallScene />
-            {magicOrbMessage && (
+            {currentMessageImg && (
               <div className="magic-orb-overlay-message">
-                {magicOrbMessage === '이름을 알려주세요' ? (
-                  <img
-                    src={namePromptImg}
-                    alt="이름을 알려주세요"
-                    style={{ width: '220px', height: 'auto' }}
-                  />
-                ) : (
-                  <span>{magicOrbMessage}</span>
+                {currentMessageImg === 'name' && (
+                  <img src={namePromptImg} alt="이름을 알려주세요" style={{ width: '220px' }} />
+                )}
+                {currentMessageImg === 'pretty' && (
+                  <img src={prettyImg} alt="이름이 예뻐요" style={{ width: '220px' }} />
+                )}
+                {currentMessageImg === 'worry' && (
+                  <img src={worryImg} alt="고민이 뭐에요?" style={{ width: '220px' }} />
                 )}
               </div>
             )}
           </div>
 
-          {/* 별 & 입력 칸 영역 */}
+          {/* 별 + 입력칸 영역 */}
           <div
             style={{
               marginLeft: '50px',
@@ -87,7 +97,7 @@ function App() {
             }}
           >
             {step === 'nameInput' && <NameInput onSubmit={handleNameSubmit} />}
-            {step === 'concernInput' && (
+            {step === 'concernInput' && showConcernInput && (
               <ConcernInput onSubmit={handleConcernSubmit} />
             )}
             {step === 'result' && (

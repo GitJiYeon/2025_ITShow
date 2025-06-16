@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import starImg from '../img/star.png'; // ✅ 이미지 경로 수정
+import starImg from '../img/star.png';
 
 function NameInput({ onSubmit }) {
   const [input, setInput] = useState('');

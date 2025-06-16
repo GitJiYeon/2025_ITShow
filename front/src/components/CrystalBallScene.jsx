@@ -16,7 +16,7 @@ function CrystalBall() {
 
   return (
     <mesh ref={meshRef} position={[0, 0.05, 0]}>
-      <sphereGeometry args={[1.0, 128, 128]} />
+      <sphereGeometry args={[1.6, 128, 128]} />
       <MeshTransmissionMaterial
         transmission={1}
         roughness={0.05}
